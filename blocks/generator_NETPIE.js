@@ -7,6 +7,10 @@ Blockly.JavaScript['netpie.setup'] = function(block) {
 	var code = '';
 	code += '#EXTINC#include <WiFi.h>#END\n';
 	code += '#EXTINC#include <MicroGear.h>#END\n';
+	code += '#EXTINC#include <AuthClient.h>#END\n';
+	code += '#EXTINC#include <MQTTClient.h>#END\n';
+	code += '#EXTINC#include <PubSubClient.h>#END\n';
+	code += '#EXTINC#include <SHA1.h>#END\n';
 	code += '#VARIABLE #define APPID   "' + text_appid + '" #END\n';
 	code += '#VARIABLE #define KEY     "' + text_key + '" #END\n';
 	code += '#VARIABLE #define SECRET  "' + text_secret + '" #END\n';
@@ -23,7 +27,16 @@ Blockly.JavaScript['netpie.setup'] = function(block) {
 };
 
 Blockly.JavaScript['netpie.loop'] = function(block) {
-	var code = 'microgear.loop();\n';
+	var code = '';
+	code += 'static uint32_t connect_timer = millis();\n';
+	code += 'if (microgear.connected()) {\n';
+    code += '  microgear.loop();\n';
+    code += '} else {\n';
+    code += '  if ((millis() - connect_timer) >= 5000) {\n';
+    code += '    microgear.connect(APPID);\n';
+    code += '    connect_timer = millis();\n';
+    code += '  }\n';
+	code += '}\n';
 	return code;
 };
 
@@ -38,9 +51,9 @@ Blockly.JavaScript['netpie.on_rev'] = function(block) {
 };
 
 Blockly.JavaScript['netpie.chat'] = function(block) {
-	var value_value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC);
+	var value_value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC) || '""';
 	var text_topic = block.getFieldValue('topic');
-	var code = 'microgear.chat(ALIAS, String("' + text_topic + '").c_str());\n';
+	var code = 'if (microgear.connected()) { microgear.chat("' + text_topic + '", String(' + value_value + ').c_str()); }\n';
 	return code;
 };
 
@@ -59,5 +72,7 @@ Blockly.JavaScript['netpie.get_text'] = function(block) {
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
-
-
+Blockly.JavaScript['netpie.is_connected'] = function(block) {
+	var code = 'microgear.connected()';
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};

@@ -121,5 +121,20 @@ Blockly.Blocks['netpie.get_text'] = {
 	}
 };
 
+Blockly.Blocks['netpie.is_connected'] = {
+	init: function() {
+		this.jsonInit({
+			"message0": "NETPIE is connected",
+			"output": [
+				"Number",
+				"Boolean"
+			],
+			"colour": 0,
+			"tooltip": "",
+			"helpUrl": ""
+		});
+	}
+};
+
 
 
