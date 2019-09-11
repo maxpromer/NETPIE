@@ -28,6 +28,7 @@ Blockly.Blocks['netpie.setup'] = {
 	}
 };
 
+/*
 Blockly.Blocks['netpie.loop'] = {
 	init: function() {
 		this.jsonInit({
@@ -40,6 +41,7 @@ Blockly.Blocks['netpie.loop'] = {
 		});
 	}
 };
+*/
 
 Blockly.Blocks['netpie.on_rev'] = {
 	init: function() {
@@ -69,6 +71,24 @@ Blockly.Blocks['netpie.chat'] = {
 				"name": "value",
 				"align": "RIGHT"
 			}, {
+				"type": "field_input",
+				"name": "topic",
+				"text": ""
+			}],
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 0,
+			"tooltip": "",
+			"helpUrl": ""
+		});
+	}
+};
+
+Blockly.Blocks['netpie.subscribe'] = {
+	init: function() {
+		this.jsonInit({
+			"message0": "NETPIE subscribe %1",
+			"args0": [{
 				"type": "field_input",
 				"name": "topic",
 				"text": ""

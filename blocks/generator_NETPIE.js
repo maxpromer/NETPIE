@@ -23,6 +23,20 @@ Blockly.JavaScript['netpie.setup'] = function(block) {
     code += '});\n';
 	code += 'microgear.init(KEY, SECRET, ALIAS);\n';
 	code += 'microgear.connect(APPID);\n';
+	code += '\n';
+	code += '#EXTINC#include "KBEvent.h"#END\n';
+	code += '#VARIABLE KBEvent kbevt;#END\n';
+	code += 'kbevt.attach("NETPIEJob",KBEventType::EVERY, [](){\n';
+	code += '  static uint32_t connect_timer = millis();\n';
+	code += '  if (microgear.connected()) {\n';
+    code += '    microgear.loop();\n';
+    code += '  } else {\n';
+    code += '    if ((millis() - connect_timer) >= 5000) {\n';
+    code += '      microgear.connect(APPID);\n';
+    code += '      connect_timer = millis();\n';
+    code += '    }\n';
+	code += '  }\n';
+	code += '}, 100);\n';
 	return code;
 };
 
@@ -54,6 +68,12 @@ Blockly.JavaScript['netpie.chat'] = function(block) {
 	var value_value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC) || '""';
 	var text_topic = block.getFieldValue('topic');
 	var code = 'if (microgear.connected()) { microgear.chat("' + text_topic + '", String(' + value_value + ').c_str()); }\n';
+	return code;
+};
+
+Blockly.JavaScript['netpie.subscribe'] = function(block) {
+	var text_topic = block.getFieldValue('topic');
+	var code = 'microgear.subscribe("' + text_topic + '");\n';
 	return code;
 };
 
